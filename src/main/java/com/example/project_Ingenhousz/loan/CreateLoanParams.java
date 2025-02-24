@@ -9,6 +9,11 @@ public record CreateLoanParams(
 ) {
 
     public Loan toLoan() {
-        return new Loan(loanAmount, yearsPayable, annualInterestRate);
+        Loan loan = new Loan();
+        loan.setLoanAmount(loanAmount);
+        loan.setYearsPayable(yearsPayable);
+        loan.setAnnualInterestRate(annualInterestRate);
+
+        return loan;
     }
 }
