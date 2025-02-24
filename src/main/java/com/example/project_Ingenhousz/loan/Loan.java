@@ -1,33 +1,37 @@
 package com.example.project_Ingenhousz.loan;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Getter
 @Setter
-@Entity(name="loans")
+@Entity(name = "loans")
 public class Loan {
 
     @Id
     @SequenceGenerator(name = "loans_id_seq", sequenceName = "loans_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "loans_id_seq")
-    Long id;
+    private Long id;
 
-    BigDecimal loanAmount;
+    private BigDecimal loanAmount;
 
-    int yearsPayable;
+    private int yearsPayable;
 
-    BigDecimal annualInterestRate;
+    @Column(precision = 19, scale = 6)
+    private BigDecimal annualInterestRate;
 
-    public Loan(BigDecimal loanAmount, int yearsPayable, BigDecimal annualInterestRate) {
-        this.loanAmount = loanAmount;
-        this.yearsPayable = yearsPayable;
-        this.annualInterestRate = annualInterestRate;
+    @JsonIgnore
+    public int getMonthsPayable() {
+        return yearsPayable * 12;
+    }
+
+    @JsonIgnore
+    public BigDecimal getMonthlyInterestRate() {
+        return annualInterestRate.divide(new BigDecimal("12"), RoundingMode.HALF_UP);
     }
 }
